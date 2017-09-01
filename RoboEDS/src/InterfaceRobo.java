@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Scanner;
@@ -7,21 +10,38 @@ public class InterfaceRobo {
 	private static int opcao;
 	private static int n1 = 0;
 	private static int n2 = 0;
-	
+	private static Robo robo;
+	private static Scanner name;
+	private static Scanner opc;
+	private static Date d;
+	private static Scanner scaum;
+	private static Scanner scadois;
+	private static FileWriter file;
+
+
+	private static void inicializa() throws IOException {
+		robo = new Robo("",100,"");
+		name = new Scanner(System.in);
+		opc = new Scanner(System.in);
+		d = new Date();
+		file = new FileWriter(new File(System.getProperty("user.dir")+"/file.txt"));
+	}
+
 	public static void pegaNumero() {
-		Scanner scaum = new Scanner(System.in);
-		Scanner scadois = new Scanner(System.in);
+		scaum = new Scanner(System.in);
+		scadois = new Scanner(System.in);
 		System.out.println("\nDigite o primeiro numero:");
 		n1 = scaum.nextInt();
 		System.out.println("Digite o segundo numero:");
 		n2 = scadois.nextInt();
 	}
-	
-	public static void opcao (Robo robo, double value) {
+
+	public static void opcaoMenu (Robo robo, double value, String tipo) throws IOException {
 		robo.setBateria(robo.getBateria()-1);
 		System.out.println("\nResultado = " + value + " Bateria = " + robo.getBateria());
+		file.write(tipo);
 	}
-	
+
 	public static void menu() {
 		System.out.println("\nDIGITE A OPÇÃO DESEJADA");
 		System.out.println("	1 - Mostrar Robô");
@@ -31,17 +51,13 @@ public class InterfaceRobo {
 		System.out.println("	5 - Divisão");
 		System.out.println("	6 - Carregar Bateria");
 		System.out.println("	0 - Sair");
-		//last
 		System.out.println("\nOpção: "); 
 	}
-	
-	public static void main(String[] args) {
+
+	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		Robo robo = new Robo("",100,"");
+		inicializa();
 		String nome;
-		Scanner name = new Scanner(System.in);
-		Scanner opc = new Scanner(System.in);
-		java.util.Date d = new Date();
 		String dStr = java.text.DateFormat.getDateInstance(DateFormat.MEDIUM).format(d);
 		robo.setFabrica(dStr);
 		System.out.println("Digite o nome do seu Robô: ");
@@ -50,34 +66,37 @@ public class InterfaceRobo {
 		do{
 			menu();
 			opcao = opc.nextInt();
-
 			switch(opcao){
 			case 0:			
 				break;
 			case 1:
 				System.out.println("\nOlá, eu sou o " + robo.getNome() + "! \nEsta é a minha bateria: " + robo.getBateria() + " \nFui fabricado em: " + robo.getFabrica());
+				file.write("robô mostrado");
 				break;
 			case 2:
 				pegaNumero();
-				opcao(robo, robo.Soma(n1, n2));
+				opcaoMenu(robo, robo.Soma(n1, n2), "soma");
 				break;
 			case 3:
 				pegaNumero();
-				opcao(robo, robo.Subtracao(n1, n2));
+				opcaoMenu(robo, robo.Subtracao(n1, n2), "subtração");
 				break;
 			case 4:
 				pegaNumero();
-				opcao(robo, robo.Multiplicacao(n1, n2));
+				opcaoMenu(robo, robo.Multiplicacao(n1, n2), "multiplicação");
 				break;
 			case 5:
 				pegaNumero();
-				opcao(robo, robo.Divisao(n1, n2));
+				opcaoMenu(robo, robo.Divisao(n1, n2), "divisão");
 				break;
 			case 6:
 				robo.setBateria(100);
 				System.out.println("\nBateria Carregada");
+				file.write("bateria carregada");
 				break;
 			default:
 				System.out.println("\nOpção inválida! Tente novamente.");     }
 		} while(opcao != 0);
-		System.out.println("Fim de execução");   }   }
+		System.out.println("Fim de execução");   }   
+
+}
